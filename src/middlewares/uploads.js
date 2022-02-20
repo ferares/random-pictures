@@ -11,12 +11,20 @@ const imageFilter = (req, file, cb) => {
 
 const upload = multer({ storage: multer.memoryStorage(), fileFilter: imageFilter })
 const resizeImages = (req, res, next) => {
-  if (!req.file) return next()
-  sharp(req.file.buffer).resize(1500).toFormat('jpeg').jpeg({ quality: 90 }).toBuffer((error, buff) => {
-    if (error) return next(error)
-    req.body.picture = `data:image/jpeg;base64,${buff.toString('base64')}`
-    next()
+  if ((!req.files) || (!req.files.length)) return next()
+  const promises = []
+  req.body.pictures = []
+  req.files.map((file) => {
+    promises.push(
+      sharp(file.buffer).resize(1500).toFormat('jpeg').jpeg({ quality: 90 }).toBuffer()
+    )
   })
+  Promise.all(promises).then((buffers) => {
+    for (const buffer of buffers) {
+      req.body.pictures.push(buffer)
+    }
+    next()
+  }).catch(next)
 }
 
 module.exports = {
