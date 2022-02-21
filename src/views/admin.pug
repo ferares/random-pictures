@@ -15,8 +15,8 @@ html(lang='es')
                 img.card-img-top(src=picture.url)
                 div.card-body
                   div.form-check
-                    input.form-check-input(id='approve-#{picture._id}' type='checkbox' name='approved[]' value=picture._id)
-                    label.form-check-label(for='approve-#{picture._id}')
+                    input.form-check-input(id=`approve-${picture._id}` type='checkbox' name='approved[]' value=picture._id)
+                    label.form-check-label(for=`approve-${picture._id}`)
                       | Aprobar
                   ul.list-group.list-group-flush
                     li.list-group-item
