@@ -3,7 +3,7 @@ require('dotenv').config()
 const { SSH_FOLDER, PICTURES_HOST } = process.env
 
 function getPictureName(picture) {
-  return `${picture._id}.jpg`
+  return `${picture._id}.webp`
 }
 
 function getPicturePath(picture) {
