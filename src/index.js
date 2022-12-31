@@ -40,13 +40,13 @@ httpServer.use(cors())
 
 httpServer.get('/random', PicturesController.random)
 // httpServer.get('/all', PicturesController.all)
-httpServer.post(
+/*httpServer.post(
   '/new',
   upload.array('pictures[]'),
   resizeImages,
   hcaptcha,
   PicturesController.post
-)
+)*/
 
 // Start server
 httpServer.listen(PORT, () => console.log(`Listening on ${PORT}`))
