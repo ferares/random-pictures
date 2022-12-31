@@ -35,6 +35,9 @@ httpServer.use(bodyParser.json())
 // CORS
 httpServer.use(cors())
 
+// Static files
+app.use(express.static('public'))
+
 // httpServer.get('/admin', AdminController.get)
 // httpServer.post('/admin', AdminController.post)
 
