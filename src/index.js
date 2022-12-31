@@ -33,8 +33,12 @@ httpServer.use(bodyParser.urlencoded({ extended: true }))
 httpServer.use(bodyParser.json())
 
 // CORS
-httpServer.use(cors())
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => callback(null, true),
+}
 
+app.use(cors(corsOptions))
 // Static files
 app.use(express.static('public'))
 
