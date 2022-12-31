@@ -37,10 +37,10 @@ const corsOptions = {
   credentials: true,
   origin: (origin, callback) => callback(null, true),
 }
+httpServer.use(cors(corsOptions))
 
-app.use(cors(corsOptions))
 // Static files
-app.use(express.static('public'))
+httpServer.use(express.static('public'))
 
 // httpServer.get('/admin', AdminController.get)
 // httpServer.post('/admin', AdminController.post)
