@@ -15,7 +15,7 @@ const connect = () => {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }
-  mongoose.connect(dbUri, connectionParams).catch((err) => {
+  mongoose.set('strictQuery', false).connect(dbUri, connectionParams).catch((err) => {
     console.error(`Error connecting to the database. \n${err}`)
   })
 }
