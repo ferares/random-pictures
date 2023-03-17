@@ -9,8 +9,7 @@ require('dotenv').config()
 const { ADMIN_PASSWORD } = process.env
 
 const get = (req, res, next) => {
-  Picture.find({ approved: false }).lean().exec((error, pictures) => {
-    if (error) return next(error)
+  Picture.find({ approved: false }).lean().exec().then((pictures) => {
     res.render('admin', {
       pictures: pictures.map((picture) => {
         return {
@@ -19,14 +18,13 @@ const get = (req, res, next) => {
         }
       })
     })
-  })
+  }).catch(next)
 }
 
 const post = (req, res, next) => {
   const { password } = req.body
   if ((!password) || (password !== ADMIN_PASSWORD)) return res.sendStatus(422)
-  Picture.find({ approved: false }).exec((error, pictures) => {
-    if (error) return next(error)
+  Picture.find({ approved: false }).exec().then((pictures) => {
     const promises = []
     const approved = req.body.approved || []
     for (const picture of pictures) {
@@ -38,7 +36,7 @@ const post = (req, res, next) => {
       }
     }
     Promise.all(promises).then(() => res.redirect('admin')).catch(next)
-  })
+  }).catch(next)
 }
 
 module.exports = { get, post }

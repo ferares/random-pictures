@@ -20,23 +20,20 @@ const {
 } = process.env
 
 const random = (req, res, next) => {
-  Picture.estimatedDocumentCount().exec((error, count) => {
-    if (error) return next(error)
+  Picture.estimatedDocumentCount().exec().then(((count) => {
     const random = Math.floor(Math.random() * count)
-    Picture.findOne({ approved: true }).skip(random).lean().exec((error, picture) => {
-      if (error) return next(error)
+    Picture.findOne({ approved: true }).skip(random).lean().exec().then((picture) => {
       if (!picture) return next()
       res.send({
         ...picture,
         picture: getPictureUrl(picture),
       })
-    })
-  })
+    }).catch(next)
+  })).catch(next)
 }
 
 const all = (req, res, next) => {
-  Picture.find({ }).lean().exec((error, pictures) => {
-    if (error) return next(error)
+  Picture.find({ }).lean().exec().then((pictures) => {
     res.render('all', {
       pictures: pictures.map((picture) => {
         return {
@@ -45,7 +42,7 @@ const all = (req, res, next) => {
         }
       })
     })
-  })
+  }).catch(next)
 }
 
 const post = (req, res, next) => {
