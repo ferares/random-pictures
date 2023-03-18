@@ -1,10 +1,9 @@
 import mongoose from 'mongoose'
-import ssh from 'ssh2'
 import dotenv from 'dotenv'
+import { rmSync } from 'fs'
 
 // Utils
 import { getPicturePath } from '../helpers'
-
 
 // Load env variables
 dotenv.config()
@@ -37,23 +36,9 @@ const pictureSchema = new mongoose.Schema<IPicture>({
   },
 }, { timestamps: true })
 
-pictureSchema.pre('deleteOne', async function(next) {
+pictureSchema.pre('deleteOne', async function() {
   const picture = await this.model.findOne(this.getQuery())
-  const sshClient = new ssh.Client()
-  sshClient.on('ready', () => {
-    sshClient.sftp((error, sftp) => {
-      if (error) return next(error)
-      sftp.unlink(getPicturePath(picture), (error) => {
-        if (error) return next(error)
-        next()
-      })
-    })
-  }).on('error', next).connect({
-    host: SSH_HOST,
-    port: Number(SSH_PORT) || 22,
-    username: SSH_USER,
-    password: SSH_PASS,
-  })
+  rmSync(getPicturePath(picture))
 })
 
 const Picture = mongoose.model<IPicture>('picture', pictureSchema)

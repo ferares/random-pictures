@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import ssh from 'ssh2'
+import { writeFile } from 'fs'
 import dotenv from 'dotenv'
 
 // Models
@@ -13,13 +13,7 @@ import { getPictureUrl, getPicturePath } from '../helpers'
 
 // Load env variables
 dotenv.config()
-const {
-  SSH_HOST,
-  SSH_PORT,
-  SSH_USER,
-  SSH_PASS,
-  SMTP_FROM,
-} = process.env
+const { SMTP_FROM } = process.env
 
 class PicturesController {
   public static random: RequestHandler = (req, res, next) => {
@@ -59,39 +53,25 @@ class PicturesController {
       }))
     }
     Promise.all(promises).then((pictures) => {
-      const sshClient = new ssh.Client()
-      sshClient.on('ready', () => {
-        sshClient.sftp((error, sftp) => {
+      const promises: Promise<void>[] = []
+      for (const picture of pictures) {
+        promises.push(new Promise((resolve, reject) => {
+          writeFile(picture.path, picture.data, (err) => {
+            if (err) return reject(err)
+            resolve()
+          })
+        }))
+      }
+      Promise.all(promises).then(() => {
+        mailer.sendMail({
+          from: SMTP_FROM,
+          subject: 'Nuevas fotos',
+          text: 'Nuevas fotos pendientes de revisión.',
+        }, error => {
           if (error) return next(error)
-          const promises: Promise<void>[] = []
-          for (const picture of pictures) {
-            const writeStream = sftp.createWriteStream(picture.path)
-            writeStream.on('error', next)
-            promises.push(new Promise((resolve, reject) => {
-              writeStream.write(picture.data, (error) => {
-                if (error) reject(error)
-                resolve()
-              })
-            }))
-          }
-          Promise.all(promises).then(() => {
-            sshClient.end()
-            mailer.sendMail({
-              from: SMTP_FROM,
-              subject: 'Nuevas fotos',
-              text: 'Nuevas fotos pendientes de revisión.',
-            }, error => {
-              if (error) return next(error)
-              return res.json({ success: true })
-            })
-          }).catch(next)
+          return res.json({ success: true })
         })
-      }).on('error', next).connect({
-        host: SSH_HOST,
-        port: Number(SSH_PORT) || 22,
-        username: SSH_USER,
-        password: SSH_PASS,
-      })
+      }).catch(next)
     }).catch(next)
   }
 }
