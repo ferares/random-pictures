@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "npm update && npx tsc"
+    "build": "npm update && npx tsc && npm run copy-views",
+    "copy-views": "copyfiles -u 1 ./src/views/* ./src/views/**/* ./dist/"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
     "@types/nodemailer": "6.4.7",
     "@types/sharp": "0.31.1",
     "@types/ssh2": "^1.11.8",
+    "copyfiles": "^2.4.1",
     "nodemon": "2.0.21",
     "ts-node": "10.9.1"
   }
