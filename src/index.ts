@@ -12,12 +12,15 @@ import { hcaptcha } from './middlewares/hcaptcha'
 import AdminController from './controllers/admin'
 import PicturesController from './controllers/pictures'
 
+// DB
+import DB from './db'
+
 // Load env variables
 dotenv.config()
 const { PORT } = process.env
 
 // DB
-require('./db').connect()
+DB.connect()
 
 // Server
 const httpServer = express()
