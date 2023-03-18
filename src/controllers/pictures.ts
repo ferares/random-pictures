@@ -6,10 +6,10 @@ import dotenv from 'dotenv'
 import { Picture } from '../models/Picture'
 
 // Mailer
-import mailer from '../mailer'
+import mailer from '../services/mailer'
 
 // Utils
-import { getPictureUrl, getPicturePath } from '../utils'
+import { getPictureUrl, getPicturePath } from '../helpers'
 
 // Load env variables
 dotenv.config()

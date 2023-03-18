@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 import { Picture } from '../models/Picture'
 
 // Utils
-import { getPictureUrl } from '../utils'
+import { getPictureUrl } from '../helpers'
 
 // Load env variables
 dotenv.config()

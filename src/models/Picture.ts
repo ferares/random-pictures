@@ -3,7 +3,7 @@ import ssh from 'ssh2'
 import dotenv from 'dotenv'
 
 // Utils
-import { getPicturePath } from '../utils'
+import { getPicturePath } from '../helpers'
 
 
 // Load env variables

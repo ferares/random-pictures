@@ -13,7 +13,7 @@ import AdminController from './controllers/admin'
 import PicturesController from './controllers/pictures'
 
 // DB
-import DB from './db'
+import DB from './services/database'
 
 // Load env variables
 dotenv.config()
