@@ -1,0 +1,57 @@
+extends layouts/default.pug
+
+block extra-head
+  script(src="/assets/upload.js") 
+
+block content
+  template(js-location-template)
+    div.card.mb-3(js-location="[{}]")
+      input(type="hidden" name="index[]" value="[{}]")
+      div.card-body
+        div.row.position-relative
+          div.col-lg-6
+            label.form-label(for="location[{}]")
+              | Ubicación (requerido)
+            input.form-control(id="location[{}]" type="text" name="location[{}]" required aria-describedby="backgrounds-location-description[{}]")
+            small(id="backgrounds-location-description[{}]")
+              | Ubicación en la que se sacó la foto.
+          div.col-lg-6
+            label.form-label(for="pictures[{}]")
+              | Fotos (requerido)
+            input.form-control(id="pictures[{}]" type="file" name="pictures[{}]" multiple required accept="image/jpg")
+          div.position-absolute.top-0.start-100.w-auto.p-0.pe-4.translate-middle
+            button.btn.btn-link.w-100.mb-auto.p-0(type="button")
+              img.img-fluid(src="assets/imgs/cancel.svg" alt="Borrar" js-location-remove="{}")
+    
+  div.container.my-4
+    form(novalidate)
+      fieldset
+        div.row.g-3.mb-3
+          div.col-lg-6
+            label.form-label(for="name")
+              | Nombre (opcional)
+            input.form-control(id="name" type="text" name="name" aria-describedby="backgrounds-name-description")
+            small(id="backgrounds-name-description")
+              | Nombre de la persona que sacó la foto.
+          div.col-lg-6
+            label.form-label(for="link")
+              | Enlace (opcional)
+            input.form-control(id="link" type="text" name="link" aria-describedby="backgrounds-link-description")
+            small(id="backgrounds-link-description")
+              | Enlace al sitio personal de la persona que sacó la foto (Sitio web, Instagram, Twitter, etc.).
+        div.mb-3(js-locations)
+        div.col-lg-4.offset-lg-8.mb-3
+          button.btn.btn-primary.w-100(type="button" js-location-add)
+            | Agregar ubicación
+        div.col-12
+          p
+            | Este formulario está protegido por hCaptcha y su 
+            a.link-dark(href="https://hcaptcha.com/privacy" target="_blank" rel="noreferrer")
+              | política de privacidad 
+            | y 
+            a.link-dark(href="https://hcaptcha.com/terms" target="_blank" rel="noreferrer")
+              | términos de servicio
+        div.col-lg-4.offset-lg-4
+          button.btn.btn-primary.w-100(type="submit")
+            |Enviar
+

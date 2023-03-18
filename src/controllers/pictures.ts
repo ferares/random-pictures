@@ -42,7 +42,11 @@ class PicturesController {
     }).catch(next)
   }
 
-  public static post: RequestHandler = (req, res, next) => {
+  public static uploadForm: RequestHandler = (req, res, next) => {
+    res.render('upload', {})
+  }
+
+  public static uploadPost: RequestHandler = (req, res, next) => {
     const { name, link, location, pictures } = req.body
     if ((!location) || (!pictures) || (!pictures.length)) return res.sendStatus(422)
     const promises: Promise<any>[] = []

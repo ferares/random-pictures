@@ -49,12 +49,13 @@ httpServer.post('/admin', AdminController.post)
 
 httpServer.get('/random', PicturesController.random)
 httpServer.get('/all', PicturesController.all)
+httpServer.get('/upload', PicturesController.uploadForm)
 httpServer.post(
-  '/new',
+  '/upload',
   multer({ storage: multer.memoryStorage(), fileFilter: Uploads.imageFilter }).array('pictures[]'),
   Uploads.resizeImages,
   Captcha.verify,
-  PicturesController.post
+  PicturesController.uploadPost
 )
 
 // Start server
