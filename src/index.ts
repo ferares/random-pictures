@@ -5,8 +5,8 @@ import path from 'path'
 import dotenv from 'dotenv'
 
 // Middlewares
-import { upload, resizeImages } from './middlewares/uploads'
-import { hcaptcha } from './middlewares/hcaptcha'
+import Uploads from './middlewares/uploads'
+import Captcha from './middlewares/hcaptcha'
 
 // Controllers
 import AdminController from './controllers/admin'
@@ -14,6 +14,7 @@ import PicturesController from './controllers/pictures'
 
 // DB
 import DB from './services/database'
+import multer from 'multer'
 
 // Load env variables
 dotenv.config()
@@ -50,9 +51,9 @@ httpServer.get('/random', PicturesController.random)
 httpServer.get('/all', PicturesController.all)
 httpServer.post(
   '/new',
-  upload.array('pictures[]'),
-  resizeImages,
-  hcaptcha,
+  multer({ storage: multer.memoryStorage(), fileFilter: Uploads.imageFilter }).array('pictures[]'),
+  Uploads.resizeImages,
+  Captcha.verify,
   PicturesController.post
 )
 
