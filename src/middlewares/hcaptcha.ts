@@ -1,9 +1,11 @@
-const https = require('https')
+import https from 'https'
+import dotenv from 'dotenv'
+import { RequestHandler } from 'express'
 
-require('dotenv').config()
+dotenv.config()
 const { HCAPTCHA_SECRET } = process.env
 
-const hcaptcha = (req, res, next) => {
+const hcaptcha: RequestHandler = (req, res, next) => {
   const { captcha } = req.body
   if (!captcha) return res.sendStatus(422)
   const captchaData = `secret=${HCAPTCHA_SECRET}&response=${captcha}`
@@ -27,4 +29,4 @@ const hcaptcha = (req, res, next) => {
   captchaReq.end()
 }
 
-module.exports = { hcaptcha }
+export { hcaptcha }

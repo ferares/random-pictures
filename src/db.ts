@@ -1,7 +1,8 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 
 // Load env variables
-require('dotenv').config()
+dotenv.config()
 const {
   DB_USER,
   DB_PASS,
@@ -11,13 +12,9 @@ const {
 
 const connect = () => {
   const dbUri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`
-  const connectionParams={
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-  mongoose.set('strictQuery', false).connect(dbUri, connectionParams).catch((err) => {
+  mongoose.set('strictQuery', false).connect(dbUri).catch((err) => {
     console.error(`Error connecting to the database. \n${err}`)
   })
 }
 
-module.exports = { connect }
+export { connect }

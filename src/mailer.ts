@@ -1,6 +1,7 @@
-const nodemailer = require('nodemailer')
+import nodemailer from 'nodemailer'
+import dotenv from 'dotenv'
 
-require('dotenv').config()
+dotenv.config()
 const {
   SMTP_HOST,
   SMTP_PORT,
@@ -11,21 +12,22 @@ const {
 } = process.env
 
 // SMTP Server
+const debug = (DEBUG || '').toLowerCase() === 'true'
 const mailer = nodemailer.createTransport(
   {
     host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: 1,
+    port: Number(SMTP_PORT),
+    secure: true,
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASS,
     },
     logger: false,
-    debug: DEBUG,
+    debug,
   },
   {
     to: SMTP_TO,
   },
 )
 
-module.exports = mailer
+export default mailer

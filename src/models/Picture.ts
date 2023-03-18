@@ -1,11 +1,13 @@
-const mongoose = require('mongoose')
-const ssh = require('ssh2')
+import mongoose from 'mongoose'
+import ssh from 'ssh2'
+import dotenv from 'dotenv'
 
 // Utils
-const { getPicturePath } = require('../utils')
+import { getPicturePath } from '../utils'
+
 
 // Load env variables
-require('dotenv').config()
+dotenv.config()
 const {
   SSH_HOST,
   SSH_PORT,
@@ -13,7 +15,13 @@ const {
   SSH_PASS,
 } = process.env
 
-const pictureSchema = new mongoose.Schema({
+interface IPicture extends mongoose.Document {
+  user: { name: string, link: string }
+  location: string
+  approved: boolean
+}
+
+const pictureSchema = new mongoose.Schema<IPicture>({
   user: {
     name: String,
     link: String,
@@ -30,7 +38,7 @@ const pictureSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 pictureSchema.pre('deleteOne', async function(next) {
-  const picture = { _id: this._conditions._id.toString() }
+  const picture = await this.model.findOne(this.getQuery())
   const sshClient = new ssh.Client()
   sshClient.on('ready', () => {
     sshClient.sftp((error, sftp) => {
@@ -42,10 +50,12 @@ pictureSchema.pre('deleteOne', async function(next) {
     })
   }).on('error', next).connect({
     host: SSH_HOST,
-    port: SSH_PORT,
+    port: Number(SSH_PORT) || 22,
     username: SSH_USER,
     password: SSH_PASS,
   })
 })
 
-module.exports = mongoose.model('Picture', pictureSchema)
+const Picture = mongoose.model<IPicture>('picture', pictureSchema)
+
+export { IPicture, Picture }
