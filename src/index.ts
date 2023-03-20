@@ -52,9 +52,9 @@ httpServer.get('/all', PicturesController.all)
 httpServer.get('/upload', PicturesController.uploadForm)
 httpServer.post(
   '/upload',
-  multer({ storage: multer.memoryStorage(), fileFilter: Uploads.imageFilter }).array('pictures[]'),
-  Uploads.resizeImages,
+  multer({ storage: multer.memoryStorage(), fileFilter: Uploads.imageFilter }).array('pictures'),
   Captcha.verify,
+  Uploads.resizeImages,
   PicturesController.uploadPost
 )
 

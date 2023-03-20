@@ -20,13 +20,16 @@ block content
                   li.list-group-item
                     b Ubicación:
                     |  #{picture.location}
-                  li.list-group-item
-                    b Usuario:
-                    |  #{picture.user.name}
-                  li.list-group-item
-                    b Enlace:
-                    a(href=picture.user.link target='_blank' rel='noreferrer')
-                      |  #{picture.user.link}
+                  if picture.author
+                    if picture.author.name
+                      li.list-group-item
+                        b Usuario:
+                        |  #{picture.author.name}
+                    if picture.author.link
+                      li.list-group-item
+                        b Enlace:
+                        a(href=picture.author.link target='_blank' rel='noreferrer')
+                          |  #{picture.author.link}
       div.row.mt-4
         div.col-12
           input.btn.btn-primary(type='submit' value='Enviar')

@@ -2,10 +2,7 @@ import { RequestHandler } from 'express'
 import dotenv from 'dotenv'
 
 // Models
-import { Picture } from '../models/Picture'
-
-// Utils
-import { getPictureUrl } from '../helpers'
+import Picture from '../models/Picture'
 
 // Load env variables
 dotenv.config()
@@ -13,12 +10,12 @@ const { ADMIN_PASSWORD } = process.env
 
 class AdminController {
   public static get: RequestHandler = (req, res, next) => {
-    Picture.find({ approved: false }).lean().exec().then((pictures) => {
+    Picture.find({ approved: false }).exec().then((pictures) => {
       res.render('admin', {
         pictures: pictures.map((picture) => {
           return {
             ...picture,
-            url: getPictureUrl(picture),
+            url: picture.getPictureUrl(),
           }
         })
       })

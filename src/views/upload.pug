@@ -1,43 +1,48 @@
 extends layouts/default.pug
 
 block extra-head
+  script(src="https://js.hcaptcha.com/1/api.js") 
   script(src="/assets/upload.js") 
 
 block content
   template(js-location-template)
     div.card.mb-3(js-location="[{}]")
-      input(type="hidden" name="index[]" value="[{}]")
+      input(type="hidden" name="index[]" value="{}")
       div.card-body
         div.row.position-relative
           div.col-lg-6
-            label.form-label(for="location[{}]")
+            label.form-label(for="locations[{}]")
               | Ubicación (requerido)
-            input.form-control(id="location[{}]" type="text" name="location[{}]" required aria-describedby="backgrounds-location-description[{}]")
+            input.form-control(id="locations[{}]" type="text" name="locations[{}]" required aria-describedby="backgrounds-location-description[{}]")
+            div.invalid-feedback
+              | Ingrese una ubicación
             small(id="backgrounds-location-description[{}]")
               | Ubicación en la que se sacó la foto.
           div.col-lg-6
             label.form-label(for="pictures[{}]")
               | Fotos (requerido)
-            input.form-control(id="pictures[{}]" type="file" name="pictures[{}]" multiple required accept="image/jpg")
+            input.form-control(id="pictures[{}]" type="file" name="pictures" multiple required accept="image/jpg")
+            div.invalid-feedback
+              | Ingrese al menos una foto
           div.position-absolute.top-0.start-100.w-auto.p-0.pe-4.translate-middle
-            button.btn.btn-link.w-100.mb-auto.p-0(type="button")
-              img.img-fluid(src="assets/imgs/cancel.svg" alt="Borrar" js-location-remove="{}")
+            button.btn.btn-link.w-100.mb-auto.p-0(type="button" title="Borrar" js-location-remove="{}")
+              | X
     
   div.container.my-4
-    form(novalidate)
+    form(novalidate action="/upload" method="post" js-form)
       fieldset
         div.row.g-3.mb-3
           div.col-lg-6
             label.form-label(for="name")
               | Nombre (opcional)
-            input.form-control(id="name" type="text" name="name" aria-describedby="backgrounds-name-description")
-            small(id="backgrounds-name-description")
+            input#name.form-control(type="text" name="name" aria-describedby="backgrounds-name-description")
+            small#backgrounds-name-description
               | Nombre de la persona que sacó la foto.
           div.col-lg-6
             label.form-label(for="link")
               | Enlace (opcional)
-            input.form-control(id="link" type="text" name="link" aria-describedby="backgrounds-link-description")
-            small(id="backgrounds-link-description")
+            input#link.form-control(type="text" name="link" aria-describedby="backgrounds-link-description")
+            small#backgrounds-link-description
               | Enlace al sitio personal de la persona que sacó la foto (Sitio web, Instagram, Twitter, etc.).
         div.mb-3(js-locations)
         div.col-lg-4.offset-lg-8.mb-3
@@ -54,4 +59,4 @@ block content
         div.col-lg-4.offset-lg-4
           button.btn.btn-primary.w-100(type="submit")
             |Enviar
-
+      div#hcaptcha.h-captcha(data-sitekey=hcaptchaSiteKey data-size="invisible")

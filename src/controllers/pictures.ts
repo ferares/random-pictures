@@ -3,39 +3,38 @@ import { writeFile } from 'fs'
 import dotenv from 'dotenv'
 
 // Models
-import { Picture } from '../models/Picture'
+import Picture from '../models/Picture'
 
 // Mailer
 import mailer from '../services/mailer'
 
-// Utils
-import { getPictureUrl, getPicturePath } from '../helpers'
-
 // Load env variables
 dotenv.config()
-const { SMTP_FROM } = process.env
+const { SMTP_FROM, HCAPTCHA_SITE_KEY } = process.env
 
 class PicturesController {
   public static random: RequestHandler = (req, res, next) => {
     Picture.estimatedDocumentCount().exec().then(((count) => {
       const random = Math.floor(Math.random() * count)
-      Picture.findOne({ approved: true }).skip(random).lean().exec().then((picture) => {
+      Picture.findOne({ approved: true }).skip(random).exec().then((picture) => {
         if (!picture) return next()
         res.send({
-          ...picture,
-          picture: getPictureUrl(picture),
+          author: picture.author,
+          location: picture.location,
+          url: picture.getPictureUrl(),
         })
       }).catch(next)
     })).catch(next)
   }
 
   public static all: RequestHandler = (req, res, next) => {
-    Picture.find({ }).lean().exec().then((pictures) => {
+    Picture.find({ approved: true }).exec().then((pictures) => {
       res.render('all', {
         pictures: pictures.map((picture) => {
           return {
-            ...picture,
-            url: getPictureUrl(picture),
+            author: picture.author,
+            location: picture.location,
+            url: picture.getPictureUrl(),
           }
         })
       })
@@ -43,7 +42,8 @@ class PicturesController {
   }
 
   public static uploadForm: RequestHandler = (req, res, next) => {
-    res.render('upload', {})
+    const hcaptchaSiteKey = HCAPTCHA_SITE_KEY
+    res.render('upload', { hcaptchaSiteKey })
   }
 
   public static uploadPost: RequestHandler = (req, res, next) => {
@@ -51,9 +51,9 @@ class PicturesController {
     if ((!location) || (!pictures) || (!pictures.length)) return res.sendStatus(422)
     const promises: Promise<any>[] = []
     for (const picture of pictures) {
-      const pic = new Picture({ user: { name, link }, location })
+      const pic = new Picture({ author: { name, link }, location })
       promises.push(pic.save().then((pic) => {
-        return { path: getPicturePath(pic), data: picture }
+        return { path: pic.getPicturePath(), data: picture }
       }))
     }
     Promise.all(promises).then((pictures) => {

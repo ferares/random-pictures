@@ -7,14 +7,18 @@ const { HCAPTCHA_SECRET } = process.env
 
 class Captcha {
   public static verify: RequestHandler = (req, res, next) => {
-    const { captcha } = req.body
-    if (!captcha) return res.sendStatus(422)
-    const captchaData = `secret=${HCAPTCHA_SECRET}&response=${captcha}`
+    const { 'h-captcha-response': response } = req.body
+    if (!response) return res.sendStatus(422)
+    const captchaData = (new URLSearchParams({ secret: HCAPTCHA_SECRET, response } as any)).toString()
     const captchaReq = https.request(
       {
         hostname: 'hcaptcha.com',
-        path: `/siteverify?${captchaData}`,
+        path: '/siteverify',
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': Buffer.byteLength(captchaData),
+        }
       },
       captchaRes => {
         if (captchaRes.statusCode !== 200) return res.sendStatus(500)
@@ -26,7 +30,7 @@ class Captcha {
       }
     )
     captchaReq.on('error', _ => res.sendStatus(500))
-    captchaReq.write('')
+    captchaReq.write(captchaData)
     captchaReq.end()
   }
 }
