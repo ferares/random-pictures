@@ -14,7 +14,9 @@ class AdminController {
       res.render('admin', {
         pictures: pictures.map((picture) => {
           return {
-            ...picture,
+            id: picture._id,
+            author: picture.author,
+            location: picture.location,
             url: picture.getPictureUrl(),
           }
         })
@@ -30,6 +32,13 @@ class AdminController {
       const approved = req.body.approved || []
       for (const picture of pictures) {
         if (approved.includes(picture._id.toString())) {
+          console.log(req.body)
+          const location = req.body.location[picture._id]
+          const author = req.body.author[picture._id]
+          const link = req.body.link[picture._id]
+          if (location) picture.location = location
+          if (author) picture.author.name = author
+          if (link) picture.author.link = link
           picture.approved = true
           promises.push(picture.save())
         } else {

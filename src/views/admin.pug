@@ -4,32 +4,39 @@ block content
   div.container.my-4
     form(action='' method='post')
       div.row
-        div.col-md-4
-          input.form-control(type='password' name='password')
-      div.row
         each picture in pictures
-          div.col-md-4.mt-4
+          div.col-md-6.mt-4
             div.card
               img.card-img-top(src=picture.url)
               div.card-body
-                div.form-check
-                  input.form-check-input(id=`approve-${picture._id}` type='checkbox' name='approved[]' value=picture._id)
-                  label.form-check-label(for=`approve-${picture._id}`)
-                    | Aprobar
                 ul.list-group.list-group-flush
                   li.list-group-item
-                    b Ubicación:
-                    |  #{picture.location}
+                    div.form-check
+                      input.form-check-input(id=`approve-${picture.id}` type='checkbox' name='approved[]' value=picture.id)
+                      label.form-check-label(for=`approve-${picture.id}`) Aprobar
+                  li.list-group-item
+                    div.row
+                      label.col-auto.col-form-label(for=`location-${picture.id}`)
+                        b Ubicación:
+                      div.col-auto.flex-grow-1
+                        input.form-control(id=`location-${picture.id}` type='text' name=`location[${picture.id}]` value=picture.location required)
                   if picture.author
                     if picture.author.name
                       li.list-group-item
-                        b Usuario:
-                        |  #{picture.author.name}
+                        div.row
+                          label.col-auto.col-form-label(for=`author-${picture.id}`)
+                            b Autor:
+                          div.col-auto.flex-grow-1
+                            input.form-control(id=`author-${picture.id}` type='text' name=`author[${picture.id}]` value=picture.author.name)
                     if picture.author.link
                       li.list-group-item
-                        b Enlace:
-                        a(href=picture.author.link target='_blank' rel='noreferrer')
-                          |  #{picture.author.link}
+                        div.row
+                          label.col-auto.col-form-label(for=`link-${picture.id}`)
+                            b Enlace:
+                          div.col-auto.flex-grow-1
+                            input.form-control(id=`link-${picture.id}` type='text' name=`link[${picture.id}]` value=picture.author.link)
       div.row.mt-4
-        div.col-12
-          input.btn.btn-primary(type='submit' value='Enviar')
+        div.col-9
+          input.form-control(type='password' name='password' placeholder='Contraseña' required)
+        div.col-3
+          input.btn.btn-primary.w-100(type='submit' value='Enviar')

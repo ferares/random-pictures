@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import { rm } from 'fs'
+import path from 'path'
 
 // Load env variables
 dotenv.config()
@@ -41,7 +42,7 @@ pictureSchema.method('getPictureName', function getPictureName(): string {
 })
 
 pictureSchema.method('getPicturePath', function getPicturePath(): string {
-  return `${PICTURES_FOLDER}/${this.getPictureName()}`
+  return path.resolve(PICTURES_FOLDER || '', this.getPictureName())
 })
 
 pictureSchema.method('getPictureUrl', function getPictureUrl(): string {
