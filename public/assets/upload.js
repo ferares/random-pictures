@@ -7,14 +7,13 @@ function locationAdd() {
   locationElement.innerHTML = locationElement.innerHTML.replaceAll('{}', `${window.locationsIndex}`)
   locationElement.setAttribute('js-location', `[${window.locationsIndex}]`)
   const locationRemoveBtn = locationElement.querySelector('[js-location-remove]')
-  locationRemoveBtn.addEventListener('click', locationRemove)
+  locationRemoveBtn.addEventListener('click', () => locationRemove(locationRemoveBtn))
   window.locationsIndex++
   window.locationsCount++
   updateRemoveBtns()
 }
 
-function locationRemove(event) {
-  const locationRemoveBtn = event.currentTarget
+function locationRemove(locationRemoveBtn) {
   const locationNumber = locationRemoveBtn.getAttribute('js-location-remove')
   const location = document.querySelector(`[js-location="[${locationNumber}]"]`)
   location.remove()
@@ -61,11 +60,33 @@ function submit(event) {
   event.preventDefault()
   const form = event.currentTarget
   if (!verifyForm(form)) return
+  const fieldset = form.querySelector('fieldset')
+  fieldset.setAttribute('disabled', true)
   window.hcaptcha.execute({ async: true }).then(() => {
     let indexes = form.elements['index[]']
     if (!indexes.length) indexes = [indexes]
+    let locationsCount = indexes.length
+    let failureCount = indexes.length
     for (const index of indexes) {
-      submitLocation(form, index.value)
+      submitLocation(form, index.value).then((res) => {
+        locationsCount--
+        if (res.success) {
+          failureCount--
+          if (locationsCount > 0) {
+            locationRemove(document.querySelector(`[js-location-remove="${index.value}"]`))
+          }
+        }
+        if (locationsCount === 0) {
+          form.classList.remove('was-validated')
+          form.reset()
+          fieldset.removeAttribute('disabled')
+          if (failureCount === 0) {
+            alert('Todas sus fotos fueron enviadas con éxito y están pendientes de aprobación.')
+          } else {
+            alert('Algunas de sus fotos no pudieron ser enviadas con éxito. Intente nuevamente.')
+          }
+        }
+      })
     }
   })
 } 
@@ -79,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () =>{
   }
   const locationRemoveBtns = document.querySelectorAll('[js-location-remove]')
   for (const locationRemoveBtn of locationRemoveBtns) {
-    locationRemoveBtn.addEventListener('click', locationRemove)
+    locationRemoveBtn.addEventListener('click', () => locationRemove(locationRemoveBtn))
   }
 
   if (locationRemoveBtns.length === 0) locationAdd()
