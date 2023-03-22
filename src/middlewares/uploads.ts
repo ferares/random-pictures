@@ -16,7 +16,7 @@ class Uploads {
     const files = (req.files as Express.Multer.File[])
     files.map((file: Express.Multer.File) => {
       promises.push(
-        sharp(file.buffer).resize(1500).webp({}).toBuffer()
+        sharp(file.buffer).resize(2000).webp({}).toBuffer()
       )
     })
     Promise.all(promises).then((buffers) => {

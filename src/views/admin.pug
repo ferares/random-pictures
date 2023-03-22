@@ -20,21 +20,18 @@ block content
                         b Ubicación:
                       div.col-auto.flex-grow-1
                         input.form-control(id=`location-${picture.id}` type='text' name=`location[${picture.id}]` value=picture.location required)
-                  if picture.author
-                    if picture.author.name
-                      li.list-group-item
-                        div.row
-                          label.col-auto.col-form-label(for=`author-${picture.id}`)
-                            b Autor:
-                          div.col-auto.flex-grow-1
-                            input.form-control(id=`author-${picture.id}` type='text' name=`author[${picture.id}]` value=picture.author.name)
-                    if picture.author.link
-                      li.list-group-item
-                        div.row
-                          label.col-auto.col-form-label(for=`link-${picture.id}`)
-                            b Enlace:
-                          div.col-auto.flex-grow-1
-                            input.form-control(id=`link-${picture.id}` type='text' name=`link[${picture.id}]` value=picture.author.link)
+                  li.list-group-item
+                    div.row
+                      label.col-auto.col-form-label(for=`author-${picture.id}`)
+                        b Autor:
+                      div.col-auto.flex-grow-1
+                        input.form-control(id=`author-${picture.id}` type='text' name=`author[${picture.id}]` value=picture.author ? picture.author.name : '')
+                  li.list-group-item
+                    div.row
+                      label.col-auto.col-form-label(for=`link-${picture.id}`)
+                        b Enlace:
+                      div.col-auto.flex-grow-1
+                        input.form-control(id=`link-${picture.id}` type='text' name=`link[${picture.id}]` value=picture.author ? picture.author.link : '')
       div.row.mt-4
         div.col-9
           input.form-control(type='password' name='password' placeholder='Contraseña' required)
