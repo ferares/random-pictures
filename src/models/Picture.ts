@@ -1,13 +1,14 @@
-import mongoose from 'mongoose'
+import mongoose, { ObjectId } from 'mongoose'
 import dotenv from 'dotenv'
 import { rm } from 'fs'
 import path from 'path'
 
 // Load env variables
-dotenv.config()
+dotenv.config({ quiet: true })
 const { PICTURES_FOLDER, PICTURES_URL } = process.env
 
 interface IPictureDocument extends mongoose.Document {
+  _id: ObjectId
   author: { name: string, link: string }
   location: string
   approved: boolean
@@ -49,9 +50,9 @@ pictureSchema.method('getPictureUrl', function getPictureUrl(): string {
   return `${PICTURES_URL}/${this.getPictureName()}`
 })
 
-pictureSchema.pre('deleteOne', async function() {
+pictureSchema.pre('deleteOne', async function () {
   const picture = await this.model.findOne(this.getQuery())
-  rm(picture.getPicturePath(), () => {})
+  rm(picture.getPicturePath(), () => { })
 })
 
 const Picture: PictureModel = mongoose.model<IPicture, PictureModel>('picture', pictureSchema)

@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 import Picture from '../models/Picture'
 
 // Load env variables
-dotenv.config()
+dotenv.config({ quiet: true })
 const { ADMIN_PASSWORD } = process.env
 
 class AdminController {
@@ -23,7 +23,7 @@ class AdminController {
       })
     }).catch(next)
   }
-  
+
   public static post: RequestHandler = (req, res, next) => {
     const { password } = req.body
     if ((!password) || (password !== ADMIN_PASSWORD)) return res.sendStatus(422)
@@ -32,9 +32,9 @@ class AdminController {
       const approved = req.body.approved || []
       for (const picture of pictures) {
         if (approved.includes(picture._id.toString())) {
-          const location = req.body.location?.[picture._id]
-          const author = req.body.author?.[picture._id]
-          const link = req.body.link?.[picture._id]
+          const location = req.body.location?.[picture._id.toString()]
+          const author = req.body.author?.[picture._id.toString()]
+          const link = req.body.link?.[picture._id.toString()]
           if (location) picture.location = location
           if (author) picture.author.name = author
           if (link) picture.author.link = link
@@ -46,7 +46,7 @@ class AdminController {
       }
       Promise.all(promises).then(() => res.redirect('admin')).catch(next)
     }).catch(next)
-}
+  }
 
 }
 

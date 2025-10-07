@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
 // Load env variables
-dotenv.config()
+dotenv.config({ quiet: true })
 const {
   DB_USER,
   DB_PASS,

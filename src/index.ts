@@ -17,7 +17,7 @@ import DB from './services/database'
 import multer from 'multer'
 
 // Load env variables
-dotenv.config()
+dotenv.config({ quiet: true })
 const { PORT } = process.env
 
 // DB
@@ -48,6 +48,7 @@ httpServer.get('/admin', AdminController.get)
 httpServer.post('/admin', AdminController.post)
 
 httpServer.get('/random', PicturesController.random)
+httpServer.get('/random/image', PicturesController.randomImage)
 httpServer.get('/all', PicturesController.all)
 httpServer.get('/upload', PicturesController.uploadForm)
 httpServer.post(

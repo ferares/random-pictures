@@ -2,7 +2,7 @@ import https from 'https'
 import dotenv from 'dotenv'
 import { RequestHandler } from 'express'
 
-dotenv.config()
+dotenv.config({ quiet: true })
 const { HCAPTCHA_SECRET } = process.env
 
 class Captcha {
