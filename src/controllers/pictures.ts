@@ -32,7 +32,7 @@ class PicturesController {
       const random = Math.floor(Math.random() * count)
       Picture.findOne({ approved: true }).skip(random).exec().then((picture) => {
         if (!picture) return next()
-        res.redirect(`${req.protocol}//${req.host}/${picture.getPictureUrl()}`)
+        res.redirect(`${req.protocol}://${req.host}/${picture.getPictureUrl()}`)
       }).catch(next)
     })).catch(next)
   }
