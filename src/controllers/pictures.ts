@@ -9,7 +9,7 @@ import Picture from '../models/Picture'
 import mailer from '../services/mailer'
 
 // Load env variables
-dotenv.config()
+dotenv.config({ quiet: true })
 const { SMTP_FROM, HCAPTCHA_SITE_KEY } = process.env
 
 class PicturesController {
@@ -23,6 +23,16 @@ class PicturesController {
           location: picture.location,
           url: picture.getPictureUrl(),
         })
+      }).catch(next)
+    })).catch(next)
+  }
+
+  public static randomImage: RequestHandler = (req, res, next) => {
+    Picture.estimatedDocumentCount().exec().then(((count) => {
+      const random = Math.floor(Math.random() * count)
+      Picture.findOne({ approved: true }).skip(random).exec().then((picture) => {
+        if (!picture) return next()
+        res.redirect(`${req.get('host')}/${picture.getPictureUrl()}`)
       }).catch(next)
     })).catch(next)
   }
