@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import dotenv from 'dotenv'
 import { rm } from 'fs'
 import path from 'path'
@@ -8,7 +8,7 @@ dotenv.config({ quiet: true })
 const { PICTURES_FOLDER, PICTURES_URL } = process.env
 
 interface IPictureDocument extends mongoose.Document {
-  _id: ObjectId
+  _id: Types.ObjectId
   author: { name: string, link: string }
   location: string
   approved: boolean
